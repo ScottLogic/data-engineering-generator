@@ -30,6 +30,13 @@
       "items": {
         "$ref": "#/definitions/constraint"
       }
+    },
+    "relationships": {
+      "title": "Defines any child objects",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/relationship"
+      }
     }
   },
   "definitions": {
@@ -947,7 +954,74 @@
           "type": "string"
         }
       }
+    },
+    "relationship": {
+      "title": "Defines any nested child objects",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name"
+      ],
+      "default": {
+        "name": "relationshipName",
+        "type": "string",
+        "formatting": "",
+        "unique": false,
+        "nullable": true
+      },
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "profileFile": {
+          "type": "string"
+        },
+        "profile": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "fields"
+          ],
+          "properties": {
+            "additionalProperties": false,
+            "description": {
+              "title": "A description of what data the sub-profile is modelling",
+              "type": "string"
+            },
+            "fields": {
+              "title": "The fields that data will be produced for. Field names must begin with an alphabetic character.",
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "additionalItems": false,
+              "items": {
+                "$ref": "#/definitions/field"
+              }
+            },
+            "constraints": {
+              "title": "The constraints on the data to be output",
+              "type": "array",
+              "additionalItems": false,
+              "items": {
+                "$ref": "#/definitions/constraint"
+              }
+            },
+            "relationships": {
+              "title": "Defines any child objects",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/relationship"
+              }
+            }        
+          }
+        },
+        "extents": {
+          "type": "array"
+        }
+      }
     }
   }
 }
-
