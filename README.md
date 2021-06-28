@@ -1,4 +1,4 @@
-# DataHelix Generator [![CircleCI](https://circleci.com/gh/finos/datahelix.svg?style=svg)](https://circleci.com/gh/finos/datahelix) [![FINOS - Incubating](https://cdn.jsdelivr.net/gh/finos/contrib-toolbox@master/images/badge-incubating.svg)](https://finosfoundation.atlassian.net/wiki/display/FINOS/Incubating)
+# DataHelix Generator [![CircleCI](https://circleci.com/gh/finos/datahelix.svg?style=svg)](https://circleci.com/gh/finos/datahelix) [![FINOS - Active](https://cdn.jsdelivr.net/gh/finos/contrib-toolbox@master/images/badge-active.svg)](https://finosfoundation.atlassian.net/wiki/display/FINOS/Active)
 
 ![DataHelix logo](docs/logo.png)
 
