@@ -17,6 +17,7 @@
 package com.scottlogic.datahelix.generator.core.walker.rowspec;
 
 import com.google.inject.Inject;
+import com.scottlogic.datahelix.generator.common.distribution.WeightedElement;
 import com.scottlogic.datahelix.generator.core.decisiontree.DecisionTree;
 import com.scottlogic.datahelix.generator.core.fieldspecs.RowSpec;
 import com.scottlogic.datahelix.generator.core.generation.databags.DataBag;
@@ -59,7 +60,7 @@ public class RandomRowSpecDecisionTreeWalker implements DecisionTreeWalker {
     }
 
     private Stream<RowSpec> getFromCachedRowSpecs(DecisionTree tree) {
-        List<RowSpec> rowSpecCache = rowSpecTreeSolver.createRowSpecs(tree).collect(Collectors.toList());
+        List<WeightedElement<RowSpec>> rowSpecCache = rowSpecTreeSolver.createRowSpecs(tree).collect(Collectors.toList());
         return Stream.generate(() -> getRandomRowSpec(rowSpecCache));
     }
 
@@ -79,11 +80,43 @@ public class RandomRowSpecDecisionTreeWalker implements DecisionTreeWalker {
     }
 
     private Optional<RowSpec> getFirstRowSpec(DecisionTree tree) {
-        return rowSpecTreeSolver.createRowSpecs(tree).findFirst();
+        return rowSpecTreeSolver.createRowSpecs(tree).findFirst().map(WeightedElement::element);
     }
 
-    private RowSpec getRandomRowSpec(List<RowSpec> rowSpecCache) {
-        return rowSpecCache.get(random.nextInt(rowSpecCache.size()));
+    /**
+     * Get a row spec from the rowSpecCache in a weighted manner.<br />
+     * I.e. if there are 2 rowSpecs, one with a 70% weighting and the other with 30%.<br />
+     * Calling this method 10 times should *ROUGHLY* emit 7 of the 70% weighted rowSpecs and 3 of the others.<br />
+     * It does this by producing a virtual rowSpec 'range', i.e.<br />
+     *  - values between 1 and 70 represent the 70% weighted rowSpec<br />
+     *  - values between 71 and 100 represent the 30% weighted rowSpec<br />
+     * <br />
+     *  The function then picks a random number between 1 and 100 and yields the rowSpec that encapsulates that value.<br />
+     * <br />
+     *  As this method uses a random number generator, it will not ALWAYS yield a correct split, but it is more LIKELY than not.<br />
+     * @param rowSpecCache a list of weighted rowSpecs (weighting is between 0 and 1)
+     * @return a rowSpec picked from the list of weighted rowSpecs
+     */
+    private RowSpec getRandomRowSpec(List<WeightedElement<RowSpec>> rowSpecCache) {
+        double totalRange = rowSpecCache.stream()
+            .mapToDouble(WeightedElement::weight).sum();
+
+        double nextRowSpecFromRange = random.nextInt((int)(totalRange * 100)) / 100d;
+
+        double currentPosition = 0d;
+        WeightedElement<RowSpec> lastRowSpec = null;
+
+        for (WeightedElement<RowSpec> weightedRowSpec: rowSpecCache) {
+            currentPosition += weightedRowSpec.weight();
+
+            if (currentPosition >= nextRowSpecFromRange) {
+                return weightedRowSpec.element();
+            }
+
+            lastRowSpec = weightedRowSpec;
+        }
+
+        return lastRowSpec.element();
     }
 
     private DataBag createDataBag(RowSpec rowSpec) {

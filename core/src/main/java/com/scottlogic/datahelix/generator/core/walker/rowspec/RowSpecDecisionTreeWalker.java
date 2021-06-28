@@ -16,6 +16,7 @@
 package com.scottlogic.datahelix.generator.core.walker.rowspec;
 
 import com.google.inject.Inject;
+import com.scottlogic.datahelix.generator.common.distribution.WeightedElement;
 import com.scottlogic.datahelix.generator.common.util.FlatMappingSpliterator;
 import com.scottlogic.datahelix.generator.core.decisiontree.DecisionTree;
 import com.scottlogic.datahelix.generator.core.generation.databags.DataBag;
@@ -38,7 +39,7 @@ public class RowSpecDecisionTreeWalker implements DecisionTreeWalker {
     @Override
     public Stream<DataBag> walk(DecisionTree tree) {
         return FlatMappingSpliterator.flatMap(
-            rowSpecTreeSolver.createRowSpecs(tree),
+            rowSpecTreeSolver.createRowSpecs(tree).map(WeightedElement::element),
             rowSpecDataBagGenerator::createDataBags);
     }
 }

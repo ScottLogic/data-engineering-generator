@@ -48,7 +48,7 @@ public class NotEqualToConstraint implements AtomicConstraint {
 
     @Override
     public String toString(){
-        return String.format("`%s` = %s", field.getName(), value);
+        return String.format("`%s` != %s", field.getName(), value);
     }
 
     @Override

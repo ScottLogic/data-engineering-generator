@@ -16,6 +16,7 @@
 
 package com.scottlogic.datahelix.generator.core.decisiontree;
 
+import com.scottlogic.datahelix.generator.common.distribution.WeightedElement;
 import com.scottlogic.datahelix.generator.common.profile.Field;
 import com.scottlogic.datahelix.generator.common.profile.Fields;
 import com.scottlogic.datahelix.generator.common.profile.ProfileFields;
@@ -32,7 +33,6 @@ import com.scottlogic.datahelix.generator.core.reducer.ConstraintReducer;
 import com.scottlogic.datahelix.generator.core.walker.decisionbased.RowSpecTreeSolver;
 import com.scottlogic.datahelix.generator.core.walker.decisionbased.SequentialOptionPicker;
 import com.scottlogic.datahelix.generator.core.walker.pruner.TreePruner;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -47,6 +47,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static com.shazam.shazamcrest.MatcherAssert.assertThat;
 
 class RowSpecTreeSolverTests {
     private final FieldSpecMerger fieldSpecMerger = new FieldSpecMerger();
@@ -115,9 +116,10 @@ class RowSpecTreeSolverTests {
 
         final List<RowSpec> rowSpecs = dTreeWalker
             .createRowSpecs(merged)
+            .map(WeightedElement::element)
             .collect(Collectors.toList());
 
-        Assert.assertThat(rowSpecs, notNullValue());
+        assertThat(rowSpecs, notNullValue());
     }
 
 }

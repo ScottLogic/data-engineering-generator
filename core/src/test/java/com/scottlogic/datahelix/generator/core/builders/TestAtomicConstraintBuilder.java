@@ -26,6 +26,7 @@ import com.scottlogic.datahelix.generator.core.profile.constraints.atomic.IsNull
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class TestAtomicConstraintBuilder {
     private TestConstraintNodeBuilder testConstraintNodeBuilder;
@@ -52,6 +53,14 @@ public class TestAtomicConstraintBuilder {
         InSetConstraint inSetConstraint = new InSetConstraint(
             field,
             inSetRecordsFrom(legalValues));
+        testConstraintNodeBuilder.constraints.add(inSetConstraint);
+        return testConstraintNodeBuilder;
+    }
+
+    public TestConstraintNodeBuilder isInSet(InSetRecord... weightedValues) {
+        InSetConstraint inSetConstraint = new InSetConstraint(
+            field,
+            Stream.of(weightedValues).collect(Collectors.toList()));
         testConstraintNodeBuilder.constraints.add(inSetConstraint);
         return testConstraintNodeBuilder;
     }
